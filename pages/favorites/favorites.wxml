@@ -1,0 +1,10 @@
+<view class="container">
+  <block wx:for="{{favorites}}" wx:key="id">
+    <swiper-item>
+      <view class="favorite-item">
+        <text>{{item.name}} - {{item.location}}</text>
+        <button bindtap="removeFavorite" data-id="{{item.id}}">删除</button>
+      </view>
+    </swiper-item>
+  </block>
+</view> 

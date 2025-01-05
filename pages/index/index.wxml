@@ -4,14 +4,12 @@
   <view class="container">
     <!-- 搜索栏 -->
     <view class="search-box">
-      <view class="location">
-        <image class="location-icon" src="/images/location.png"></image>
-        <text>{{currentLocation}}</text>
-      </view>
-      <view class="search-input">
-        <image class="search-icon" src="/images/search.png"></image>
-        <input placeholder="请输入想要查询的位置" bindinput="onSearchInput"/>
-      </view>
+      <input class="search-input" placeholder="请输入地址或地标" bindinput="onSearchInput" />
+      <button class="search-button" 
+              hover-class="button-hover"
+              bindtap="searchLocation">
+        搜索
+      </button>
     </view>
 
     <!-- 分类标签 -->
@@ -32,5 +30,12 @@
       show-location="true"
       bindmarkertap="onMarkerTap">
     </map>
+
+    <view wx:if="{{selectedMarker}}" class="marker-info">
+      <text>{{selectedMarker.name}}</text>
+      <button bindtap="toggleFavorite">
+        {{selectedMarker.isFavorite ? '取消收藏' : '收藏'}}
+      </button>
+    </view>
   </view>
 </scroll-view>

@@ -1,7 +1,9 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/my/my"
+    "pages/my/my",
+    "pages/feedback/feedback",
+    "pages/favorites/favorites"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -20,11 +22,22 @@
         "selectedIconPath": "images/home-active.png"
       },
       {
+        "pagePath": "pages/favorites/favorites",
+        "text": "收藏",
+        "iconPath": "images/favorites.png",
+        "selectedIconPath": "images/favorites-active.png"
+      },
+      {
         "pagePath": "pages/my/my",
         "text": "我的",
         "iconPath": "images/my.png",
         "selectedIconPath": "images/my-active.png"
       }
     ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序定位"
+    }
   }
 }

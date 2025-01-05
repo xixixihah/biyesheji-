@@ -42,5 +42,11 @@ Page({
         });
       }
     });
+  },
+
+  navigateToFeedback() {
+    wx.navigateTo({
+      url: '/pages/feedback/feedback'
+    });
   }
 })

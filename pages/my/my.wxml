@@ -4,4 +4,9 @@
     <text class="nickname">{{userInfo.nickName}}</text>
   </view>
   <button wx:else bindtap="getUserProfile">获取用户信息</button>
+  <button bindtap="navigateToFeedback">反馈</button>
+  <view class="marker-info" wx:for="{{markers}}" wx:key="id">
+    <text>{{item.name}}</text>
+    <button bindtap="navigateToReview" data-id="{{item.id}}">评价</button>
+  </view>
 </view> 

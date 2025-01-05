@@ -17,8 +17,29 @@ page {
 }
 
 .search-box {
-  padding: 20rpx;
-  background: #fff;
+  display: flex;
+  padding: 10rpx;
+  background-color: #fff;
+}
+
+.search-input {
+  flex: 1;
+  padding: 10rpx;
+  border: 1px solid #ccc;
+  border-radius: 5rpx;
+  margin-right: 10rpx;
+}
+
+.search-button {
+  padding: 10rpx 20rpx;
+  background-color: #1890FF;
+  color: #fff;
+  border-radius: 5rpx;
+}
+
+/* 使用 hover-class 样式 */
+.button-hover {
+  background-color: #005BBB;
 }
 
 .location {
