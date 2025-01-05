@@ -1,0 +1,23 @@
+<view class="container">
+  <view class="user-info">
+    <button wx:if="{{!hasUserInfo}}" class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+      <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
+    </button>
+    <view class="nickname" wx:else>{{userInfo.nickName}}</view>
+  </view>
+  
+  <view class="menu-list">
+    <view class="menu-item">
+      <text>我的收藏</text>
+      <image class="arrow" src="/images/arrow-right.png"></image>
+    </view>
+    <view class="menu-item">
+      <text>使用记录</text>
+      <image class="arrow" src="/images/arrow-right.png"></image>
+    </view>
+    <view class="menu-item">
+      <text>关于我们</text>
+      <image class="arrow" src="/images/arrow-right.png"></image>
+    </view>
+  </view>
+</view> 

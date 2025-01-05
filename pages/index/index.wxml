@@ -1,0 +1,36 @@
+<!--index.wxml-->
+<navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+<scroll-view class="scrollarea" scroll-y type="list">
+  <view class="container">
+    <!-- 搜索栏 -->
+    <view class="search-box">
+      <view class="location">
+        <image class="location-icon" src="/images/location.png"></image>
+        <text>{{currentLocation}}</text>
+      </view>
+      <view class="search-input">
+        <image class="search-icon" src="/images/search.png"></image>
+        <input placeholder="请输入想要查询的位置" bindinput="onSearchInput"/>
+      </view>
+    </view>
+
+    <!-- 分类标签 -->
+    <view class="category-tabs">
+      <view class="tab {{activeTab === 'all' ? 'active' : ''}}" bindtap="switchTab" data-type="all">全部</view>
+      <view class="tab {{activeTab === 'charging' ? 'active' : ''}}" bindtap="switchTab" data-type="charging">充电桩</view>
+      <view class="tab {{activeTab === 'swap' ? 'active' : ''}}" bindtap="switchTab" data-type="swap">换电柜</view>
+      <view class="tab {{activeTab === 'cabinet' ? 'active' : ''}}" bindtap="switchTab" data-type="cabinet">充电柜</view>
+    </view>
+
+    <!-- 地图组件 -->
+    <map
+      id="myMap"
+      class="map"
+      latitude="{{latitude}}"
+      longitude="{{longitude}}"
+      markers="{{markers}}"
+      show-location="true"
+      bindmarkertap="onMarkerTap">
+    </map>
+  </view>
+</scroll-view>
