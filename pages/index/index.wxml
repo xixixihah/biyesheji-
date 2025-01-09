@@ -1,7 +1,10 @@
 <!--index.wxml-->
-<navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+<page-meta>
+  <navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
+</page-meta>
+
 <scroll-view class="scrollarea" scroll-y type="list">
-  <view class="container">
+  <view class="container" style="height: 1275rpx; display: flex; box-sizing: border-box">
     <!-- 搜索栏 -->
     <view class="search-box">
       <view class="location">
@@ -9,15 +12,22 @@
         <text>{{currentLocation}}</text>
       </view>
       <view class="search-input">
-        <image class="search-icon" src="/images/search.png"></image>
-        <input placeholder="请输入想要查询的位置" bindinput="onSearchInput"/>
+        <image class="search-icon" src="/images/location.png"></image>
+        <input 
+          style="height: 27rpx; display: block; box-sizing: border-box" 
+          placeholder="请输入想要查询的位置" 
+          value="{{searchText}}"
+          bindtap="handleInputTap"
+          disabled="true"
+        />
+        <view class="search-btn" bindtap="handleSearch">搜索</view>
       </view>
     </view>
 
     <!-- 分类标签 -->
     <view class="category-tabs">
       <view class="tab {{activeTab === 'all' ? 'active' : ''}}" bindtap="switchTab" data-type="all">全部</view>
-      <view class="tab {{activeTab === 'charging' ? 'active' : ''}}" bindtap="switchTab" data-type="charging">充电桩</view>
+      <view class="tab {{activeTab === 'charging' ? 'active' : ''}}" bindtap="switchTab" data-type="charging" style="width: 122rpx; display: block; box-sizing: border-box">充电桩</view>
       <view class="tab {{activeTab === 'swap' ? 'active' : ''}}" bindtap="switchTab" data-type="swap">换电柜</view>
       <view class="tab {{activeTab === 'cabinet' ? 'active' : ''}}" bindtap="switchTab" data-type="cabinet">充电柜</view>
     </view>
@@ -30,7 +40,8 @@
       longitude="{{longitude}}"
       markers="{{markers}}"
       show-location="true"
-      bindmarkertap="onMarkerTap">
+      bindmarkertap="onMarkerTap" 
+      style="position: relative; left: 0rpx; top: -1rpx">
     </map>
   </view>
 </scroll-view>

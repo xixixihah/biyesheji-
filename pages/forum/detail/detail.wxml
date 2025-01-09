@@ -1,0 +1,77 @@
+<!--pages/forum/detail/detail.wxml-->
+<view class="detail-container">
+  <!-- 加载中显示 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading">加载中...</view>
+  </view>
+
+  <!-- 帖子不存在时显示 -->
+  <view class="error-container" wx:elif="{{!post}}">
+    <view class="error-text">帖子不存在或已被删除</view>
+  </view>
+
+  <!-- 帖子内容 -->
+  <block wx:elif="{{post}}">
+    <!-- 原有的帖子内容部分 -->
+    <view class="post-detail">
+      <view class="post-header">
+        <text class="post-title">{{post.title}}</text>
+        <view class="post-meta">
+          <text class="post-category">{{post.category}}</text>
+          <text class="post-time">{{post.createTime}}</text>
+        </view>
+      </view>
+      <view class="post-content">{{post.content}}</view>
+      <!-- 如果有图片就显示图片 -->
+      <view class="post-images" wx:if="{{post.images && post.images.length > 0}}">
+        <image 
+          wx:for="{{post.images}}" 
+          wx:key="*this" 
+          src="{{item}}" 
+          mode="aspectFill"
+          bindtap="previewImage"
+          data-url="{{item}}"
+        ></image>
+      </view>
+    </view>
+
+    <!-- 评论部分 -->
+    <view class="comments-section">
+      <view class="comments-header">
+        <text class="comments-title">评论 ({{comments ? comments.length : 0}})</text>
+      </view>
+
+      <view class="comments-list">
+        <block wx:if="{{comments && comments.length > 0}}">
+          <view class="comment-item" wx:for="{{comments}}" wx:key="id">
+            <image class="comment-avatar" src="{{item.avatar || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+            <view class="comment-content">
+              <view class="comment-user">{{item.username || '匿名用户'}}</view>
+              <view class="comment-text">{{item.content}}</view>
+              <view class="comment-time">{{item.createTime}}</view>
+            </view>
+          </view>
+        </block>
+        <view class="no-comments" wx:else>
+          暂无评论，快来发表第一条评论吧
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 评论输入框 -->
+  <view class="comment-input-section {{isIphoneX ? 'safe-bottom' : ''}}">
+    <input 
+      class="comment-input" 
+      value="{{commentText}}" 
+      bindinput="onCommentInput"
+      placeholder="写下你的评论..." 
+      confirm-type="send"
+      bindconfirm="onCommentSubmit"
+    />
+    <view 
+      class="comment-button {{commentText.trim() ? 'comment-button-active' : 'comment-button-disabled'}}" 
+      bindtap="onCommentSubmit"
+    >发送</view>
+  </view>
+</view>

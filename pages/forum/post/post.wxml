@@ -1,0 +1,70 @@
+<view class="post-container">
+  <!-- 标题输入 -->
+  <view class="input-section">
+    <input 
+      class="title-input" 
+      placeholder="请输入标题" 
+      maxlength="50"
+      value="{{title}}"
+      bindinput="onTitleInput"
+    />
+    <text class="count">{{title.length}}/50</text>
+  </view>
+
+  <!-- 分类选择 -->
+  <view class="category-section">
+    <view 
+      class="category-item {{selectedCategory === item ? 'active' : ''}}" 
+      wx:for="{{categories}}" 
+      wx:key="*this"
+      bindtap="selectCategory"
+      data-category="{{item}}"
+    >{{item}}</view>
+  </view>
+
+  <!-- 内容输入 -->
+  <view class="content-section">
+    <textarea 
+      class="content-input" 
+      placeholder="分享你的想法..." 
+      maxlength="1000"
+      value="{{content}}"
+      bindinput="onContentInput"
+    ></textarea>
+    <text class="count">{{content.length}}/1000</text>
+  </view>
+
+  <!-- 图片上传 -->
+  <view class="image-section">
+    <view class="image-list">
+      <view 
+        class="image-item" 
+        wx:for="{{images}}" 
+        wx:key="*this"
+      >
+        <image src="{{item}}" mode="aspectFill"></image>
+        <view 
+          class="delete-btn"
+          catchtap="deleteImage"
+          data-index="{{index}}"
+        >×</view>
+      </view>
+      <view 
+        class="upload-btn" 
+        bindtap="chooseImage" 
+        wx:if="{{images.length < 9}}"
+      >
+        <text>+</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-section">
+    <button 
+      class="submit-btn {{canSubmit ? '' : 'disabled'}}" 
+      bindtap="submitPost"
+      disabled="{{!canSubmit}}"
+    >发布</button>
+  </view>
+</view> 

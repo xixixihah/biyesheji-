@@ -1,0 +1,246 @@
+.forum-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f5f5f5;
+}
+
+/* 搜索栏样式 */
+.search-header {
+  padding: 20rpx;
+  background: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.search-bar {
+  padding: 20rpx 30rpx;
+  background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  height: 72rpx;
+  background: #f5f5f5;
+  border-radius: 36rpx;
+  padding: 0 24rpx;
+}
+
+.search-icon {
+  width: 32rpx;
+  height: 32rpx;
+  margin-right: 12rpx;
+}
+
+.search-input {
+  flex: 1;
+  height: 100%;
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* 分类标签样式 */
+.category-scroll {
+  background: #fff;
+  white-space: nowrap;
+  padding: 0 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+.category-list {
+  display: inline-flex;
+  padding: 16rpx 0;
+}
+
+.category-item {
+  display: inline-block;
+  padding: 8rpx 24rpx;
+  margin-right: 16rpx;
+  font-size: 28rpx;
+  color: #666;
+  background: #f5f5f5;
+  border-radius: 28rpx;
+  transition: all 0.3s;
+}
+
+.category-item.active {
+  background: #1890ff;
+  color: #fff;
+}
+
+/* 分类导航样式 */
+.category-nav {
+  display: flex;
+  background: #fff;
+  padding: 20rpx;
+  position: fixed;
+  top: 88rpx;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  border-bottom: 1rpx solid #eee;
+}
+
+.nav-item {
+  padding: 10rpx 30rpx;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+}
+
+.nav-item.active {
+  color: #1890FF;
+}
+
+.nav-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: -10rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 4rpx;
+  background: #1890FF;
+  border-radius: 2rpx;
+}
+
+/* 帖子列表样式 */
+.post-list {
+  margin-top: 180rpx;
+  height: calc(100vh - 180rpx);
+  padding: 20rpx;
+}
+
+.post-item {
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}
+
+.post-info {
+  flex: 1;
+}
+
+.username {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.post-time {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
+
+.post-manage {
+  padding: 10rpx;
+}
+
+.manage-btn {
+  color: #999;
+  font-size: 32rpx;
+}
+
+.post-content {
+  margin-bottom: 20rpx;
+}
+
+.post-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 10rpx;
+  color: #333;
+}
+
+.post-text {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+.post-images {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20rpx;
+}
+
+.post-images image {
+  width: 220rpx;
+  height: 220rpx;
+  margin-right: 10rpx;
+  margin-bottom: 10rpx;
+  border-radius: 8rpx;
+}
+
+.post-footer {
+  display: flex;
+  padding: 20rpx 0;
+  border-top: 1rpx solid #eee;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  margin-right: 40rpx;
+}
+
+.action-icon {
+  width: 40rpx;
+  height: 40rpx;
+  margin-right: 8rpx;
+}
+
+.action-item text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+/* 发帖按钮样式 */
+.post-button {
+  position: fixed;
+  bottom: 40rpx;
+  right: 40rpx;
+  width: 100rpx;
+  height: 100rpx;
+  background: #1890FF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(24, 144, 255, 0.3);
+}
+
+.post-button image {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+/* 加载更多样式 */
+.loading, .no-more {
+  text-align: center;
+  padding: 20rpx;
+  color: #999;
+  font-size: 24rpx;
+} 

@@ -1,0 +1,36 @@
+.publish-container {
+  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+}
+
+.content-input {
+  flex: 1;
+  width: 100%;
+  padding: 20rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  line-height: 1.6;
+}
+
+.footer {
+  padding: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1rpx solid #eee;
+}
+
+.count {
+  color: #999;
+  font-size: 24rpx;
+}
+
+.publish-btn {
+  background: #1890FF;
+  color: #fff;
+  font-size: 28rpx;
+  padding: 0 40rpx;
+} 
