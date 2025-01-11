@@ -18,7 +18,7 @@
           placeholder="请输入想要查询的位置" 
           value="{{searchText}}"
           bindtap="handleInputTap"
-          disabled="true"
+          bindinput="onSearchInput"
         />
         <view class="search-btn" bindtap="handleSearch">搜索</view>
       </view>
@@ -39,9 +39,110 @@
       latitude="{{latitude}}"
       longitude="{{longitude}}"
       markers="{{markers}}"
-      show-location="true"
-      bindmarkertap="onMarkerTap" 
+      polyline="{{polyline}}"
+      show-location
+      scale="{{scale}}"
+      show-location="{{setting.showLocation}}"
+      enable-zoom="{{setting.enableZoom}}"
+      enable-scroll="{{setting.enableScroll}}"
+      enable-rotate="{{setting.enableRotate}}"
+      show-compass="{{setting.showCompass}}"
+      enable-3D="{{setting.enable3D}}"
+      enable-overlooking="{{setting.enableOverlooking}}"
+      enable-satellite="{{setting.enableSatellite}}"
+      enable-traffic="{{setting.enableTraffic}}"
       style="position: relative; left: 0rpx; top: -1rpx">
     </map>
+
+    <view class="map-controls">
+      <view class="control-btn route-btn" bindtap="showRoutePlanPanel">
+        <image src="/images/route.png"></image>
+        <text>路线</text>
+      </view>
+      <view class="control-btn plan-btn" bindtap="showRouteOnMap">
+        <image src="/images/plan.png"></image>
+        <text>规划</text>
+      </view>
+    </view>
+
+    <view class="sun-effect {{showSunEffect ? 'active' : ''}}" wx:if="{{showSunEffect}}">
+      <view class="sun"></view>
+    </view>
+
+    <view class="warning-text {{showWarningText ? 'active' : ''}}" wx:if="{{showWarningText}}">
+      <view class="warning-content">
+        <text class="emoji">⚠️</text>
+        <text>看到太阳了，注意防晒！</text>
+        <text class="emoji">🕶️</text>
+      </view>
+    </view>
+
+    <!-- 路线规划面板 -->
+    <view class="route-plan {{showRoutePlan ? 'show' : ''}}">
+      <!-- 添加顶部栏，包含返回按钮和标题 -->
+      <view class="route-header">
+        <view class="header-bar">
+          <view class="back-btn" bindtap="hideRoutePlanPanel">
+            <image src="/images/back.png"></image>
+          </view>
+          <text class="header-title">路线规划</text>
+        </view>
+
+        <!-- 优化起终点输入区域 -->
+        <view class="location-inputs">
+          <view class="location-line"></view>
+          <view class="input-group">
+            <view class="start-point">
+              <image class="location-icon" src="/images/start.png"></image>
+              <text class="location-text">{{startLocation.name || '我的位置'}}</text>
+            </view>
+            <view class="end-point">
+              <image class="location-icon" src="/images/end.png"></image>
+              <view class="input-wrapper" bindtap="chooseDestination">
+                <input 
+                  placeholder="请输入目的地" 
+                  disabled="true"
+                  value="{{endLocation.name}}"
+                />
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 优化交通方式选择区域 -->
+      <view class="transport-modes">
+        <view 
+          class="mode-item {{currentMode === item.id ? 'active' : ''}}"
+          wx:for="{{transportModes}}"
+          wx:key="id"
+          bindtap="selectTransportMode"
+          data-mode="{{item.id}}"
+        >
+          <image src="{{item.icon}}"></image>
+          <text>{{item.name}}</text>
+          <text class="mode-time" wx:if="{{routeInfo[item.id]}}">{{routeInfo[item.id].time}}</text>
+        </view>
+      </view>
+
+      <!-- 添加路线详情区域 -->
+      <scroll-view class="route-details" scroll-y wx:if="{{routeInfo}}">
+        <view class="route-summary">
+          <text class="route-time">预计{{routeInfo[currentMode].time}}分钟</text>
+          <text class="route-distance">{{routeInfo[currentMode].distance}}</text>
+        </view>
+        <view class="route-steps">
+          <!-- 路线步骤将在后续添加 -->
+        </view>
+      </scroll-view>
+
+      <!-- 优化导航按钮 -->
+      <view class="bottom-bar">
+        <button class="start-nav-btn" bindtap="startNavigation">
+          <image src="/images/navigate.png"></image>
+          <text>开始导航</text>
+        </button>
+      </view>
+    </view>
   </view>
 </scroll-view>
