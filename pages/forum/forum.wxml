@@ -35,10 +35,10 @@
    style="position: relative; left: 20rpx; top: -350rpx">
     <view class="post-item" wx:for="{{posts}}" wx:key="id" bindtap="goToDetail" data-post="{{item}}">
       <view class="post-header">
-        <image class="avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+        <image class="avatar" src="{{item.avatar || '/images/default-avatar.png'}}" mode="aspectFill"></image>
         <view class="post-info">
           <view class="username">{{item.username}}</view>
-          <view class="post-time">{{item.createTime}}</view>
+          <view class="post-time">{{item.created_at}}</view>
         </view>
       </view>
       

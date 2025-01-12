@@ -2,7 +2,9 @@
   "pages": [
     "pages/index/index",
     "pages/forum/forum",
-    "pages/my/my"
+    "pages/my/my",
+    "pages/forum/post/post",
+    "pages/forum/detail/detail"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -49,5 +51,9 @@
         "selectedIconPath": "images/user-active.png"
       }
     ]
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "downloadFile": 10000
   }
 }

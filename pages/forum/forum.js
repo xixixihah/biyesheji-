@@ -1,3 +1,13 @@
+const request = (options) => {
+    return new Promise((resolve, reject) => {
+        wx.request({
+            ...options,
+            success: (res) => resolve(res),
+            fail: (err) => reject(err)
+        });
+    });
+};
+
 Page({
   data: {
     posts: [],
@@ -14,68 +24,43 @@ Page({
   },
 
   onLoad() {
-    this.loadPosts(true);
+    this.loadPosts();
   },
 
-  // 加载帖子列表
+  // 修改加载帖子的方法
   async loadPosts(refresh = false) {
     try {
       if (this.data.loading) return;
       
       this.setData({ loading: true });
       
-      if (refresh) {
-        this.setData({ pageNum: 1, noMore: false });
-      }
-
-      // 从本地存储获取帖子数据
-      const posts = wx.getStorageSync('posts') || [];
-      
-      // 根据分类和搜索关键词过滤
-      let filteredPosts = [...posts];
-      
-      if (this.data.currentCategory !== 'all') {
-        filteredPosts = filteredPosts.filter(post => 
-          post.category === this.data.currentCategory
-        );
-      }
-      
-      if (this.data.searchKeyword) {
-        const keyword = this.data.searchKeyword.toLowerCase();
-        filteredPosts = filteredPosts.filter(post => 
-          post.title.toLowerCase().includes(keyword) || 
-          post.content.toLowerCase().includes(keyword)
-        );
-      }
-
-      // 按时间倒序排序
-      filteredPosts.sort((a, b) => 
-        new Date(b.createTime) - new Date(a.createTime)
-      );
-
-      // 分页处理
-      const start = (this.data.pageNum - 1) * this.data.pageSize;
-      const end = start + this.data.pageSize;
-      const currentPagePosts = filteredPosts.slice(start, end);
-
-      if (refresh) {
-        this.setData({ posts: currentPagePosts });
-      } else {
-        this.setData({ 
-          posts: [...this.data.posts, ...currentPagePosts]
-        });
-      }
-
-      this.setData({ 
-        loading: false,
-        noMore: currentPagePosts.length < this.data.pageSize
+      const response = await request({
+        url: 'http://127.0.0.1:3000/api/posts',
+        method: 'GET'
       });
+
+      if (response.statusCode === 200 && response.data && response.data.success) {
+        // 更新本地存储
+        await wx.setStorage({
+          key: 'posts',
+          data: response.data.posts
+        });
+        
+        this.setData({ 
+          posts: response.data.posts,
+          loading: false,
+          noMore: false
+        });
+      } else {
+        throw new Error(response.data?.error || '获取帖子失败');
+      }
     } catch (error) {
       console.error('加载帖子失败:', error);
-      this.setData({ loading: false });
-      wx.showToast({
-        title: '加载失败，请重试',
-        icon: 'none'
+      // 如果服务器请求失败，尝试从本地加载
+      const localPosts = wx.getStorageSync('posts') || [];
+      this.setData({ 
+        loading: false,
+        posts: localPosts
       });
     }
   },
@@ -125,23 +110,20 @@ Page({
 
   // 跳转到发帖页面
   goToPost() {
-    // 暂时移除登录检查
+    console.log('点击发帖按钮'); // 添加调试日志
     wx.navigateTo({
-      url: '/pages/forum/post/post'
+      url: '/pages/forum/post/post',
+      success: function() {
+        console.log('跳转成功');
+      },
+      fail: function(error) {
+        console.error('跳转失败:', error);
+        wx.showToast({
+          title: '跳转失败',
+          icon: 'none'
+        });
+      }
     });
-    
-    /* 正式环境的代码（暂时注释掉）
-    if (!this.data.userInfo) {
-      wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      });
-      return;
-    }
-    wx.navigateTo({
-      url: '/pages/forum/post/post'
-    });
-    */
   },
 
   // 跳转到帖子详情
