@@ -1,7 +1,30 @@
 <view class="container">
-  <view class="user-info" wx:if="{{hasUserInfo}}">
-    <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
-    <text class="nickname">{{userInfo.nickName}}</text>
+  <view wx:if="{{!userInfo}}" class="login-section">
+    <button 
+      open-type="getUserInfo" 
+      bindgetuserinfo="onGetUserInfo"
+      type="primary"
+      loading="{{isLoading}}">
+      微信一键登录
+    </button>
   </view>
-  <button wx:else bindtap="getUserProfile">获取用户信息</button>
+  
+  <view wx:else class="user-info">
+    <image class="avatar" src="{{userInfo.avatar_url}}" mode="aspectFill"></image>
+    <text class="nickname">{{userInfo.nickname}}</text>
+    
+    <view class="action-buttons">
+      <button class="forum-btn" 
+              type="primary" 
+              bindtap="goToForum">
+        进入论坛
+      </button>
+      
+      <button class="logout-btn" 
+              type="warn" 
+              bindtap="logout">
+        退出登录
+      </button>
+    </view>
+  </view>
 </view> 

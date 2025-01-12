@@ -1,3 +1,5 @@
+const api = require('../../../utils/api');
+
 Page({
   data: {
     title: '',
@@ -89,46 +91,71 @@ Page({
   },
 
   // 提交帖子
-  submitPost() {
-    if (!this.data.canSubmit) return;
-
-    const { title, content, images, selectedCategory, isEdit, postId } = this.data;
-
-    const postData = {
-      id: isEdit ? postId : Date.now(),
-      title: title.trim(),
-      content: content.trim(),
-      images,
-      category: selectedCategory,
-      createTime: new Date().toLocaleString(),
-      username: '用户名', // 应该使用真实用户名
-      avatar: '/images/default-avatar.png', // 应该使用真实头像
-      likes: 0,
-      comments: 0,
-      views: 0
-    };
-
-    // 保存到本地存储（实际应该保存到服务器）
-    const posts = wx.getStorageSync('posts') || [];
-    if (isEdit) {
-      const index = posts.findIndex(p => p.id === postId);
-      if (index !== -1) {
-        posts[index] = { ...posts[index], ...postData };
-      }
-    } else {
-      posts.unshift(postData);
+  async submitPost() {
+    if (!this.data.title.trim() || !this.data.content.trim()) {
+      wx.showToast({
+        title: '请填写标题和内容',
+        icon: 'none'
+      });
+      return;
     }
-    wx.setStorageSync('posts', posts);
 
-    wx.showToast({
-      title: isEdit ? '更新成功' : '发布成功',
-      icon: 'success',
-      duration: 2000,
-      success: () => {
-        setTimeout(() => {
-          wx.navigateBack();
-        }, 1500);
+    const userInfo = wx.getStorageSync('userInfo');
+    if (!userInfo) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      });
+      return;
+    }
+
+    try {
+      wx.showLoading({ title: '发布中...' });
+
+      // 上传图片（如果有）
+      const imageUrls = [];
+      for (const tempFilePath of this.data.images) {
+        const imageUrl = await api.uploadImage(tempFilePath);
+        imageUrls.push(imageUrl);
       }
-    });
+
+      const postData = {
+        title: this.data.title,
+        content: this.data.content,
+        category: this.data.selectedCategory,
+        images: imageUrls,
+        user_id: userInfo.id
+      };
+
+      let res;
+      if (this.data.isEdit) {
+        res = await api.updatePost(this.data.postId, postData);
+      } else {
+        res = await api.createPost(postData);
+      }
+
+      if (res.success) {
+        wx.showToast({
+          title: this.data.isEdit ? '更新成功' : '发布成功',
+          icon: 'success'
+        });
+
+        setTimeout(() => {
+          wx.navigateBack({
+            delta: 1
+          });
+        }, 1500);
+      } else {
+        throw new Error(res.error);
+      }
+    } catch (error) {
+      console.error('发布失败:', error);
+      wx.showToast({
+        title: '发布失败，请重试',
+        icon: 'none'
+      });
+    } finally {
+      wx.hideLoading();
+    }
   }
 }); 

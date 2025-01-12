@@ -2,21 +2,33 @@
   "pages": [
     "pages/index/index",
     "pages/forum/forum",
-    "pages/forum/post/post",
-    "pages/forum/detail/detail",
     "pages/my/my"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "首页",
-    "navigationBarTextStyle": "black",
-    "enablePullDownRefresh": true
+    "navigationBarTitleText": "校园论坛",
+    "navigationBarTextStyle": "black"
   },
+  "permission": {
+    "scope.userInfo": {
+      "desc": "用于完善用户资料"
+    },
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+    }
+  },
+  "requiredPrivateInfos": [
+    "chooseLocation",
+    "getLocation"
+  ],
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#1890FF",
-    "backgroundColor": "#ffffff",
+    "color": "#999",
+    "selectedColor": "#07c160",
+    "backgroundColor": "#fff",
+    "borderStyle": "black",
     "list": [
       {
         "pagePath": "pages/index/index",
@@ -37,14 +49,5 @@
         "selectedIconPath": "images/user-active.png"
       }
     ]
-  },
-  "requiredPrivateInfos": [
-    "getLocation",
-    "chooseLocation"
-  ],
-  "permission": {
-    "scope.userLocation": {
-      "desc": "你的位置信息将用于小程序位置接口的效果展示"
-    }
   }
 }

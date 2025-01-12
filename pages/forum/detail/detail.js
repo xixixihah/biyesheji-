@@ -1,4 +1,6 @@
 // pages/forum/detail/detail.js
+const api = require('../../../utils/api');
+
 Page({
 
     /**
@@ -30,6 +32,7 @@ Page({
                 loading: true  // 设置加载状态
             });
             this.loadPostDetail(options.id);
+            this.loadComments(options.id);
         } else {
             this.setData({ loading: false });
             wx.showToast({
@@ -49,38 +52,28 @@ Page({
     },
 
     // 加载帖子详情
-    loadPostDetail(postId) {
+    async loadPostDetail(postId) {
         try {
-            const posts = wx.getStorageSync('posts') || [];
-            const post = posts.find(p => String(p.id) === String(postId));
+            console.log('加载帖子详情:', postId); // 调试日志
+            const res = await api.getPostDetail(postId);
             
-            if (post) {
-                // 初始化评论数组
-                const comments = Array.isArray(post.comments) ? post.comments : [];
-                
+            if (res.success) {
                 this.setData({
-                    post,
-                    comments,
-                    commentCount: comments.length,
-                    loading: false  // 加载完成
+                    post: res.data,
+                    loading: false
                 });
-
-                console.log('帖子详情:', post);
-                console.log('评论列表:', comments);
-                console.log('评论数量:', comments.length);
+                
+                // 加载评论
+                await this.loadComments(postId);
             } else {
-                this.setData({ 
-                    loading: false,
-                    post: null 
-                });
-                wx.showToast({
-                    title: '帖子不存在',
-                    icon: 'none'
-                });
+                throw new Error(res.error);
             }
         } catch (error) {
             console.error('加载帖子详情失败:', error);
-            this.setData({ loading: false });
+            this.setData({ 
+                loading: false,
+                error: '加载失败'
+            });
             wx.showToast({
                 title: '加载失败',
                 icon: 'none'
@@ -204,54 +197,46 @@ Page({
             return;
         }
 
+        // 修改登录检查逻辑
+        const userInfo = wx.getStorageSync('userInfo');
+        const openid = wx.getStorageSync('openid');
+        
+        console.log('当前用户信息:', userInfo); // 调试日志
+        console.log('当前openid:', openid); // 调试日志
+
+        if (!userInfo || !openid) {
+            wx.showToast({
+                title: '请先登录',
+                icon: 'none'
+            });
+            return;
+        }
+
         this.setData({ submitting: true });
 
         try {
-            const posts = wx.getStorageSync('posts') || [];
-            const postIndex = posts.findIndex(p => String(p.id) === String(this.data.postId));
-
-            if (postIndex === -1) {
-                throw new Error('帖子不存在');
-            }
-
-            // 创建新评论
-            const newComment = {
-                id: Date.now(),
-                content: this.data.commentText.trim(),
-                username: '用户名',
-                avatar: '/images/default-avatar.png',
-                createTime: new Date().toLocaleString()
-            };
-
-            // 确保评论数组存在
-            if (!Array.isArray(posts[postIndex].comments)) {
-                posts[postIndex].comments = [];
-            }
-
-            // 添加新评论
-            posts[postIndex].comments.unshift(newComment);
-
-            // 更新本地存储
-            wx.setStorageSync('posts', posts);
-
-            // 更新页面数据
-            const updatedComments = [newComment, ...this.data.comments];
-            
-            this.setData({
-                comments: updatedComments,
-                commentCount: updatedComments.length,
-                commentText: '',
-                post: {
-                    ...this.data.post,
-                    comments: updatedComments
-                }
+            const res = await api.createComment({
+                postId: this.data.postId,
+                userId: userInfo.id || openid, // 使用 id 或 openid
+                content: this.data.commentText.trim()
             });
 
-            wx.showToast({
-                title: '评论成功',
-                icon: 'success'
-            });
+            if (res.success) {
+                // 重新加载评论列表
+                await this.loadComments(this.data.postId);
+                
+                this.setData({
+                    commentText: '',
+                    showCommentInput: false
+                });
 
+                wx.showToast({
+                    title: '评论成功',
+                    icon: 'success'
+                });
+            } else {
+                throw new Error(res.error);
+            }
         } catch (error) {
             console.error('评论失败:', error);
             wx.showToast({
@@ -290,5 +275,36 @@ Page({
         this.setData({
             keyboardHeight: height
         });
+    },
+
+    // 加载评论
+    async loadComments(postId) {
+        try {
+            const res = await api.getComments(postId);
+            console.log('获取到的评论:', res); // 调试日志
+            
+            if (res.success) {
+                this.setData({
+                    comments: res.data.map(comment => ({
+                        id: comment.id,
+                        content: comment.content,
+                        created_at: comment.created_at,
+                        user: {
+                            nickname: comment.nickname,
+                            avatar_url: comment.avatar_url
+                        }
+                    })),
+                    commentCount: res.data.length
+                });
+            } else {
+                throw new Error(res.error);
+            }
+        } catch (error) {
+            console.error('加载评论失败:', error);
+            wx.showToast({
+                title: '加载评论失败',
+                icon: 'none'
+            });
+        }
     }
 })

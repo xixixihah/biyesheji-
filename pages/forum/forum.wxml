@@ -1,100 +1,89 @@
 <view class="container">
-  
-
-  <!-- 分类标签 -->
-  <scroll-view class="category-scroll" scroll-x="true" style="position: relative; left: 20rpx; top: -172rpx">
-    <view class="category-list">
-      <view 
-        class="category-item {{selectedCategory === '全部' ? 'active' : ''}}"
-        bindtap="selectCategory"
-        data-category="全部"
-      >全部</view>
-      <view 
-        class="category-item {{selectedCategory === '求助' ? 'active' : ''}}"
-        bindtap="selectCategory"
-        data-category="求助"
-      >求助</view>
-      <view 
-        class="category-item {{selectedCategory === '建议' ? 'active' : ''}}"
-        bindtap="selectCategory"
-        data-category="建议"
-      >建议</view>
-      
-     
-    </view>
-  </scroll-view>
+  <!-- 顶部操作栏 -->
+  <view class="action-bar">
+    <button class="post-btn" bindtap="showPostModal" type="primary">
+      发布帖子
+    </button>
+  </view>
 
   <!-- 帖子列表 -->
   <scroll-view 
-    class="post-list" 
-    scroll-y="true" 
-    bindscrolltolower="onLoadMore"
+    scroll-y 
+    class="post-list"
     refresher-enabled="{{true}}"
+    refresher-triggered="{{isRefreshing}}"
     bindrefresherrefresh="onRefresh"
-    refresher-triggered="{{refreshing}}"
-   style="position: relative; left: 20rpx; top: -350rpx">
-    <view class="post-item" wx:for="{{posts}}" wx:key="id" bindtap="goToDetail" data-post="{{item}}">
-      <view class="post-header">
-        <image class="avatar" src="{{item.avatar}}" mode="aspectFill"></image>
-        <view class="post-info">
-          <view class="username">{{item.username}}</view>
-          <view class="post-time">{{item.createTime}}</view>
-        </view>
-      </view>
+    bindscrolltolower="loadMore">
+    
+    <view wx:for="{{posts}}" 
+          wx:key="id" 
+          class="post-item"
+          bindtap="goToDetail"
+          data-id="{{item.id}}">
       
-      <view class="post-content">
-        <view class="post-title">{{item.title}}</view>
-        <view class="post-text">{{item.content}}</view>
-        <!-- 图片展示 -->
-        <view class="post-images" wx:if="{{item.images.length > 0}}">
-          <image 
-            wx:for="{{item.images}}" 
-            wx:key="*this" 
-            wx:for-item="image"
-            src="{{image}}" 
-            mode="aspectFill"
-            catchtap="previewImage"
-            data-urls="{{item.images}}"
-            data-current="{{image}}"
-          ></image>
+      <view class="post-header">
+        <image class="avatar" src="{{item.avatar_url}}" mode="aspectFill"></image>
+        <view class="post-info">
+          <text class="nickname">{{item.nickname}}</text>
+          <text class="time">{{item.created_at}}</text>
         </view>
       </view>
 
+      <view class="post-content">
+        <text class="title">{{item.title}}</text>
+        <text class="content">{{item.content}}</text>
+      </view>
+
       <view class="post-footer">
-        <view class="action-item" catchtap="toggleLike" data-post="{{item}}">
-          <image 
-            class="action-icon" 
-            src="/images/{{item.isLiked ? 'liked' : 'like'}}.png"
-            mode="aspectFit"
-          ></image>
-          <text>{{item.likes || 0}}</text>
+        <view class="action">
+          <text class="iconfont icon-comment"></text>
+          <text>{{item.comment_count || 0}}</text>
         </view>
-        <view class="action-item" catchtap="goToDetail" data-post="{{item}}">
-          <image 
-            class="action-icon" 
-            src="/images/comment.png"
-            mode="aspectFit"
-          ></image>
-          
-        </view>
-        <view class="action-item">
-          <image 
-            class="action-icon" 
-            src="/images/view.png"
-            mode="aspectFit"
-          ></image>
-          <text>{{item.views || 0}}</text>
+        <view class="action">
+          <text class="iconfont icon-like"></text>
+          <text>{{item.like_count || 0}}</text>
         </view>
       </view>
     </view>
 
     <!-- 加载更多 -->
-    <view class="loading" wx:if="{{loading}}">加载中...</view>
-    <view class="no-more" wx:if="{{noMore}}">没有更多了</view>
+    <view class="loading" wx:if="{{isLoading}}">
+      <text>加载中...</text>
+    </view>
   </scroll-view>
 
-  <!-- 发帖按钮 -->
-  <view class="post-button" bindtap="goToPost">
-    <image src="/images/post.png"></image>
+  <!-- 发帖弹窗 -->
+  <view class="modal" wx:if="{{showPostModal}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text>发布新帖</text>
+        <text class="close" bindtap="hidePostModal">×</text>
+      </view>
+
+      <view class="modal-body">
+        <input 
+          class="title-input" 
+          placeholder="请输入标题" 
+          value="{{newPost.title}}"
+          bindinput="onTitleInput"
+        />
+        <textarea 
+          class="content-input" 
+          placeholder="请输入内容" 
+          value="{{newPost.content}}"
+          bindinput="onContentInput"
+        />
+      </view>
+
+      <view class="modal-footer">
+        <button 
+          class="submit-btn" 
+          type="primary" 
+          loading="{{isSubmitting}}"
+          bindtap="submitPost">
+          发布
+        </button>
+      </view>
+    </view>
   </view>
 </view> 

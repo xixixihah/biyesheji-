@@ -2,10 +2,9 @@ const express = require('express');
 const router = express.Router();
 const pool = require('../config/db');
 
-// 获取帖子的评论列表
+// 获取帖子评论
 router.get('/post/:postId', async (req, res) => {
   try {
-    const { postId } = req.params;
     const [comments] = await pool.query(`
       SELECT 
         c.*,
@@ -15,15 +14,16 @@ router.get('/post/:postId', async (req, res) => {
       LEFT JOIN users u ON c.user_id = u.id
       WHERE c.post_id = ?
       ORDER BY c.created_at DESC
-    `, [postId]);
+    `, [req.params.postId]);
     
     res.json({ success: true, data: comments });
   } catch (error) {
+    console.error('获取评论失败:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// 添加评论
+// 创建评论
 router.post('/', async (req, res) => {
   try {
     const { postId, userId, content } = req.body;
@@ -43,8 +43,12 @@ router.post('/', async (req, res) => {
       WHERE c.id = ?
     `, [result.insertId]);
     
-    res.json({ success: true, data: newComment[0] });
+    res.json({ 
+      success: true, 
+      data: newComment[0]
+    });
   } catch (error) {
+    console.error('创建评论失败:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
@@ -52,23 +56,25 @@ router.post('/', async (req, res) => {
 // 删除评论
 router.delete('/:id', async (req, res) => {
   try {
-    const { id } = req.params;
-    const { userId } = req.body; // 确保只有评论作者能删除
-
-    const [result] = await pool.execute(
+    await pool.execute(
       'DELETE FROM comments WHERE id = ? AND user_id = ?',
-      [id, userId]
+      [req.params.id, req.body.userId]
     );
-    
-    if (result.affectedRows === 0) {
-      return res.status(403).json({ 
-        success: false, 
-        message: '无权删除此评论' 
-      });
-    }
     
     res.json({ success: true });
   } catch (error) {
+    console.error('删除评论失败:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 在路由文件开头添加测试代码
+router.get('/test', async (req, res) => {
+  try {
+    const [result] = await pool.query('SELECT 1 + 1 AS result');
+    res.json({ success: true, data: result });
+  } catch (error) {
+    console.error('数据库连接测试失败:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
