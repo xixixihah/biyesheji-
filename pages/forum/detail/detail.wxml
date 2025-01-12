@@ -1,37 +1,33 @@
 <!--pages/forum/detail/detail.wxml-->
-<view class="container">
-  <!-- 加载状态 -->
-  <view class="loading" wx:if="{{isLoading}}">
-    <text>加载中...</text>
+<view class="detail-container">
+  <!-- 加载中显示 -->
+  <view class="loading-container" wx:if="{{loading}}">
+    <view class="loading">加载中...</view>
   </view>
 
-  <!-- 帖子详情 -->
-  <view class="post-detail" wx:if="{{post}}">
-    <view class="post-header">
-      <view class="user-info">
-        <image class="avatar" src="{{post.avatar_url}}" mode="aspectFill"></image>
-        <view class="user-meta">
-          <text class="nickname">{{post.nickname}}</text>
-          <text class="time">{{post.created_at}}</text>
+  <!-- 帖子不存在时显示 -->
+  <view class="error-container" wx:elif="{{!post}}">
+    <view class="error-text">帖子不存在或已被删除</view>
+  </view>
+
+  <!-- 帖子内容 -->
+  <block wx:elif="{{post}}">
+    <!-- 原有的帖子内容部分 -->
+    <view class="post-detail">
+      <view class="post-header">
+        <text class="post-title">{{post.title}}</text>
+        <view class="post-meta">
+          <text class="post-category">{{post.category}}</text>
+          <text class="post-time">{{post.createTime}}</text>
         </view>
       </view>
-      
-      <!-- 如果是帖子作者，显示管理按钮 -->
-      <view class="manage" wx:if="{{isAuthor}}">
-        <text class="manage-btn" bindtap="showManageOptions">•••</text>
-      </view>
-    </view>
-
-    <view class="post-content">
-      <text class="title">{{post.title}}</text>
-      <text class="content">{{post.content}}</text>
-      
-      <!-- 图片列表 -->
-      <view class="image-list" wx:if="{{post.images && post.images.length > 0}}">
+      <view class="post-content">{{post.content}}</view>
+      <!-- 如果有图片就显示图片 -->
+      <view class="post-images" wx:if="{{post.images && post.images.length > 0}}">
         <image 
           wx:for="{{post.images}}" 
-          wx:key="*this"
-          src="{{item}}"
+          wx:key="*this" 
+          src="{{item}}" 
           mode="aspectFill"
           bindtap="previewImage"
           data-url="{{item}}"
@@ -39,59 +35,43 @@
       </view>
     </view>
 
-    <view class="post-footer">
-      <view class="action" bindtap="toggleLike">
-        <text class="iconfont {{isLiked ? 'icon-like-filled' : 'icon-like'}}"></text>
-        <text>{{post.like_count || 0}}</text>
+    <!-- 评论部分 -->
+    <view class="comments-section">
+      <view class="comments-header">
+        <text class="comments-title">评论 ({{comments ? comments.length : 0}})</text>
       </view>
-      <view class="action">
-        <text class="iconfont icon-comment"></text>
-        <text>{{post.comment_count || 0}}</text>
-      </view>
-    </view>
-  </view>
 
-  <!-- 评论列表 -->
-  <view class="comment-list">
-    <view class="comment-header">
-      <text class="title">评论 {{post.comment_count || 0}}</text>
-    </view>
-
-    <view class="comment-items">
-      <view 
-        class="comment-item" 
-        wx:for="{{comments}}" 
-        wx:key="id"
-      >
-        <image class="avatar" src="{{item.avatar_url}}" mode="aspectFill"></image>
-        <view class="comment-content">
-          <view class="comment-meta">
-            <text class="nickname">{{item.nickname}}</text>
-            <text class="time">{{item.created_at}}</text>
+      <view class="comments-list">
+        <block wx:if="{{comments && comments.length > 0}}">
+          <view class="comment-item" wx:for="{{comments}}" wx:key="id">
+            <image class="comment-avatar" src="{{item.avatar || '/images/default-avatar.png'}}" mode="aspectFill"></image>
+            <view class="comment-content">
+              <view class="comment-user">{{item.username || '匿名用户'}}</view>
+              <view class="comment-text">{{item.content}}</view>
+              <view class="comment-time">{{item.createTime}}</view>
+            </view>
           </view>
-          <text class="text">{{item.content}}</text>
+        </block>
+        <view class="no-comments" wx:else>
+          暂无评论，快来发表第一条评论吧
         </view>
       </view>
-
-      <view class="no-comment" wx:if="{{comments.length === 0}}">
-        暂无评论，快来抢沙发吧~
-      </view>
     </view>
-  </view>
+  </block>
 
   <!-- 评论输入框 -->
-  <view class="comment-input">
+  <view class="comment-input-section {{isIphoneX ? 'safe-bottom' : ''}}">
     <input 
-      class="input" 
-      placeholder="写下你的评论..." 
-      value="{{newComment}}"
+      class="comment-input" 
+      value="{{commentText}}" 
       bindinput="onCommentInput"
-      bindconfirm="submitComment"
+      placeholder="写下你的评论..." 
+      confirm-type="send"
+      bindconfirm="onCommentSubmit"
     />
-    <button 
-      class="submit-btn" 
-      bindtap="submitComment"
-      disabled="{{!newComment.trim()}}"
-    >发送</button>
+    <view 
+      class="comment-button {{commentText.trim() ? 'comment-button-active' : 'comment-button-disabled'}}" 
+      bindtap="onCommentSubmit"
+    >发送</view>
   </view>
 </view>

@@ -1,70 +1,30 @@
 .container {
-  padding: 30rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  background-color: #f8f8f8;
-}
-
-.login-section {
-  margin-top: 200rpx;
-  width: 80%;
+  padding: 20rpx;
 }
 
 .user-info {
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 40rpx;
-  background: white;
-  border-radius: 20rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
+  padding: 40rpx 0;
 }
 
 .avatar {
-  width: 160rpx;
-  height: 160rpx;
+  width: 128rpx;
+  height: 128rpx;
   border-radius: 50%;
-  margin-bottom: 30rpx;
-  border: 4rpx solid #fff;
-  box-shadow: 0 2rpx 10rpx rgba(0,0,0,0.1);
 }
 
 .nickname {
-  font-size: 36rpx;
+  margin-top: 20rpx;
+  font-size: 32rpx;
   color: #333;
-  margin-bottom: 40rpx;
-  font-weight: bold;
-}
-
-.action-buttons {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
-}
-
-.forum-btn, .logout-btn {
-  width: 100% !important;
-  margin: 0;
-}
-
-.forum-btn {
-  background: #07c160;
-}
-
-.logout-btn {
-  background: #ff4d4f;
 }
 
 button {
-  border-radius: 10rpx;
-  font-size: 32rpx;
-  padding: 20rpx 0;
-}
-
-button::after {
-  border: none;
+  margin-top: 20rpx;
+  padding: 10rpx 20rpx;
+  background-color: #1890FF;
+  color: #fff;
+  border-radius: 5rpx;
 } 
